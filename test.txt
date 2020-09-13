@@ -1,1 +1,50 @@
-#This is testing if the file is pushed in github or not
+Some insights into how to approach this problem:
+
+1. Language Modelling:
+	a. Intuition is to build a model which assigns high probability to real sentences and words.
+	b. Eg: "I LIKE CATS" - real sentence and should have a high probability 
+	c. Eg; "Y WYRN JLOB" - unreal sentence and should have a low probability
+	d. Thus, if message is decrypted correctly, model should return a high value and a low value o/w.
+
+2. N-Grams:
+	a. It is a sequence of "n" tokens.
+	b. A token is generally sequence of words, but in this case we will consider them as sequence of letters.
+
+3. Markov Model:
+	a. Current state of x(t) only depends on state of x(t-1)
+	b. This means:
+		P(x(t)|x(t-1),x(t-2)....) = P(x(t)|x(t-1))
+	c. In our case the state just depends on the letter
+
+	Consider This Example:
+		1. Consider the word "CAT"
+		2. In this word if we have to analyse:
+			a. P(A|C) and P(T|A).
+			b. Using JUST the word "CAT" for analysis we find both probabilities = 1
+
+		Now Larger Implementation:
+			a. Suppose we now have an entire chunk of data. Like a wikipedia page or sth.
+			b. Now we can analyse the probabilities of a lot of bigrams and trigrams(string of 2-3 letters respectively) Eg: AA, AB, AC etc.
+			c. P(A|C) = number of times "CA" appears/ number of times C appears.
+
+			How many bigrams do we have to calculate for 26 letters of the alphabet?
+				We need to consider V^2 as 26 x 26 (2 spaces and each filled by 26 due to allowed repition)
+
+		Practical Usage of this model:
+
+		1. Now we see a word is made of many bigrams. 
+		2. P(AB) = P(B|A).P(A)	i.e probability of the string of "AB" occuring.
+		3. Now for 3 lettered word 
+			P(ABC) = P(C|AB).P(B|A).P(A)
+
+			By Markov: P(C|AB) = P(C|B)
+			=> P(ABC) = P(C|B).P(B|A).P(A)
+
+		4. Now consider any word of length T:
+			P(word of length T) = P(x1).Product Of(P(X(t)|X(t-1))) taken 2 at a time.
+			P(MPKLWZ) = P(M).P(Z|P).P(P|L).P(L|K).P(K|W).P(W|M)
+
+		5. Probability of a Sentence:
+			1. Since each word is separate using the mutiplication rule
+				P(sentence) = Product Of (w(i)) for i in 1 to N (N is total words in the sentence).
+ 
