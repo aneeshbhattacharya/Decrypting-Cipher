@@ -47,4 +47,44 @@ Some insights into how to approach this problem:
 		5. Probability of a Sentence:
 			1. Since each word is separate using the mutiplication rule
 				P(sentence) = Product Of (w(i)) for i in 1 to N (N is total words in the sentence).
+
+		6. Add-one smoothing or Laplace Smoothing:
+			a. Basic idea is that we saw a word one more time than it truely occured.
+			b. P(x(t)|x(t-1)) = P(x(t) and x(t-1) occur)+1/ P(x(t-1) occurs)+ V
+			c. V is the number of unique letters in the text
+
+4. How to use this theoretic Model?
+	Train the data on a large corpus (eg; Moby Dick).
+	Then we can find the maximum likelyhood of a text being translated correctly or incorrectly.
+
+	Practical Problem:
+	Probabilities are <=1. So when we apply the mutiplication rule to words, it may be such the case that the resultant probability be so small like in the order 10^-10 that the computer
+	eventually rounds to 0.
+	If all probabilities are 0 we cant find the maximum probability among them.
+
+	Solution: Use the Log-Likelyhood:
+		To use this take log on both sides:
+		log(P(ABC)) = log(P(C|B).P(B|A).P(A)) = log(P(C|B)) + log(P(B|A)) + log(P(A))
+
+5. Genetic Algorithms:
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
