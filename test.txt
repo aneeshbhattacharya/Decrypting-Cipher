@@ -67,7 +67,34 @@ Some insights into how to approach this problem:
 		log(P(ABC)) = log(P(C|B).P(B|A).P(A)) = log(P(C|B)) + log(P(B|A)) + log(P(A))
 
 5. Genetic Algorithms:
+	
+	Basically like biological evolution. 
+	To use it we make a function of DNA. 
+	On each step we take the most fit values of the function and keep it.
 
+Basic Approach to Question:
+
+1. Make a model which dtermines if a sentence is in english or not (likelyhood function).
+2. Make a DNA map / dictionary that basically maps words:
+	eg: A->L
+		B->Z
+		c->W
+		and so on...
+   Using this map we are going to convert jumbled sentences to "correct" sentences.
+   Calculate likelyhood function of the sentence resembling english.
+
+3. Now, evolutionary DNA mapping:
+	a. Start with a list of 20 random DNAs
+	b. Map each one and get Maximum Likelyhood estimate of each.
+	c. Make a list sorting the top 5 likelyhood estimates.
+	d. Now in the top 5, randomize swap 2 keys in 3 separate instances.
+		eg: A Z M C W K L P U -> Parent
+			Z A M C W K L P U -> child1
+			A Z M W C K L P U -> child2
+			A Z M W K C L P U -> child3
+	This is done for all 5 parents and a new list of 20 DNAs are created.
+	Follow same steps above and compare likelyhood of old and new list.
+	Create new list using the top 5 and repeat.
 	
 
 
