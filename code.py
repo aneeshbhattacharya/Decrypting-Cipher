@@ -118,9 +118,82 @@ def encode(msg):					#takes msg as a string as a whole
 		coded_msg.append(encoded_character)
 
 	new_msg =""
-	new_msg = new_msg.join(coded_msg)
+	new_msg = new_msg.join(coded_msg)		#joins elements of a list to make it to a string
 
 	return new_msg
+
+def getKey(ch,d):									#mini function to get keys from values of a dictionary
+	for key,value in d.items():
+		if ch==value:
+			return key
+
+
+def decode(msg,d):
+
+	decoded_msg = []
+
+	for ch in msg:
+
+		decoded_character = ch
+		if ch in d.values():
+			decoded_character = getKey(ch,d)
+
+		decoded_msg.append(decoded_character)
+
+	final_msg = ""
+	final_msg = final_msg.join(decoded_msg)
+
+	return final_msg
+
+#MAKING THE EVOLUTIONARY ALGORITHM
+
+random_mapping_dictionaries_original = []
+random_mapping_dictionaries_new = []
+list_to_record_orignal_likelyhood = []
+list_to_record_new_likelyhood = []
+
+dictionary_to_hold_values = {}
+
+
+first_attempt = True
+l1 = list(string.ascii_lowercase)
+l2 = list(string.ascii_lowercase)
+
+
+
+
+def evolutionary_decryption(msg):
+	if first_attempt ==True:
+
+		for i in range(20):
+			random.shuffle(l2)
+			temp_mappings = dict(zip(l1, l2))								#create random dictionary mappings
+			random_mapping_dictionaries_original.append(temp_mappings)		#appends those dictionary objects to a list
+		first_attempt = False
+
+	for i in range(20):
+		dictionary = random_mapping_dictionaries_original[i]				#take a dictionary out of the list
+		xx = ""
+		xx = decode(msg,dictionary)											#decode the message using that dictionary
+		tt = log_likelyhood_of_sentence(xx)
+		list_to_record_orignal_likelyhood.append(tt)						#append the likelyhood value into the list tt
+		dictionary_to_hold_values[str(i)] = tt 								#save the value in a dictioary dependednt on index i
+
+	list_to_record_orignal_likelyhood.sort(reverse=True)					#sort the list in descending order
+
+	for i in range(5):
+		value = list_to_record_orignal_likelyhood[i]						#take top 5 of the sorted list and take the values as 'values' for dictionaries
+		for keys, values in dictionary_to_hold_values.items():
+			if value == values:
+				a = int(keys, base=base)
+				dictionary = random_mapping_dictionaries_original[a]		#now find the original dictionary from the random mapping original list
+				random_mapping_dictionaries_new.append(dictionary)			#append it to a new list to create new set of dictionaries.
+
+	
+
+	
+
+
 
 
 
