@@ -45,11 +45,11 @@ def update_pi(ch1):
 
 
 def log_likelyhood_of_word(word):
-	i = word[0]-97 
+	i = ord(word[0])-97 
 	t = np.log(pi[i])
 
 	for ch in word[1:]:
-		j = word[ch]-97
+		j = ord(ch)-97
 		t += np.log(M[i,j])
 		i=j
 
@@ -147,23 +147,26 @@ def decode(msg,d):
 
 #MAKING THE EVOLUTIONARY ALGORITHM
 
-random_mapping_dictionaries_original = []
-random_mapping_dictionaries_new = []
-list_to_record_orignal_likelyhood = []
-list_to_record_new_likelyhood = []
-
-dictionary_to_hold_values = {}
 
 
-first_attempt = True
+
+
+
 l1 = list(string.ascii_lowercase)
 l2 = list(string.ascii_lowercase)
 
 
 
 
-def evolutionary_decryption(msg):
+def evolutionary_decryption(msg,first_attempt=None):
 	if first_attempt ==True:
+
+		random_mapping_dictionaries_original = list()
+		random_mapping_dictionaries_new = list()
+		list_to_record_orignal_likelyhood = list()
+		list_to_record_new_likelyhood = list()
+
+		dictionary_to_hold_values = {}
 
 		for i in range(20):
 			random.shuffle(l2)
@@ -173,7 +176,7 @@ def evolutionary_decryption(msg):
 
 	for i in range(20):
 		dictionary = random_mapping_dictionaries_original[i]				#take a dictionary out of the list
-		xx = ""
+		
 		xx = decode(msg,dictionary)											#decode the message using that dictionary
 		tt = log_likelyhood_of_sentence(xx)
 		list_to_record_orignal_likelyhood.append(tt)						#append the likelyhood value into the list tt
@@ -185,15 +188,53 @@ def evolutionary_decryption(msg):
 		value = list_to_record_orignal_likelyhood[i]						#take top 5 of the sorted list and take the values as 'values' for dictionaries
 		for keys, values in dictionary_to_hold_values.items():
 			if value == values:
-				a = int(keys, base=base)
+				a = int(keys)
 				dictionary = random_mapping_dictionaries_original[a]		#now find the original dictionary from the random mapping original list
 				random_mapping_dictionaries_new.append(dictionary)			#append it to a new list to create new set of dictionaries.
 
-	
+
+	for i in random_mapping_dictionaries_new:
+
+		for num in range(3):												#repeat this loop thrice for 3 children per parent
+
+			list_of_alphabets = list(string.ascii_lowercase)				#take list of lowercase alphabets
+			zz = random.choice(list_of_alphabets)							#randomly select 2 of them
+			mm = random.choice(list_of_alphabets)
+
+			while(mm==zz):
+				m = random.choice(list_of_alphabets)
+
+			temporary = i[zz]												#swap random keys and values
+			i[zz] = i[mm]
+			i[mm] = temporary
+
+			random_mapping_dictionaries_new.append(i)						#add this new dictionary to the list
+
+	random_mapping_dictionaries_original = random_mapping_dictionaries_new.copy() #clones new list into the original one
+	random_mapping_dictionaries_new.clear()
+	list_to_record_new_likelyhood = list_to_record_orignal_likelyhood.copy()	#clones likelyhood list into a new list so that we can take it out and use it
+	list_to_record_orignal_likelyhood.clear()
+	final_values_dictionary = dictionary_to_hold_values.copy()					#holds values of the latest values in the dictionary
+	dictionary_to_hold_values.clear()
+
+
+
+
+
+def get_best_dictionary():
+	dictionary_best = random_mapping_dictionaries_original[0]
+	return dictionary_best
+
 
 	
+my_message = encode("Hello this is a trial dry run")
+first_attempt = True
 
+for numerical in range(20):
+	evolutionary_decryption(my_message, first_attempt )
+	first_attempt = False
 
+decode(my_message, get_best_dictionary())
 
 
 
